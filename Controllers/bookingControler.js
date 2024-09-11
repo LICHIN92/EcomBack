@@ -59,21 +59,43 @@ const bookingDetails = async (req, res) => {
     try {
         // Fetch booking details and populate the 'bookedBy' and 'itemBooked' fields
         const data = await Booking.find()
-            .populate({ path: 'bookedBy', select: ['FirstName', 'LastName', 'Email'] }) // Include relevant fields from the user
-            .populate({ path: 'itemBooked', select: ['Name', 'Type', 'Price'] }); // Include relevant fields from the item
+            .populate({ path: 'bookedBy', select: ['FirstName', 'LastName','Mobile',"AddressLine1",'AddressLine2','AddressLine3','PIN'] }) // Include relevant fields from the user
+            .populate({ path: 'itemBooked', select: ['Name', 'Type', 'Price','Pics'] }); // Include relevant fields from the item
         
         if (!data || data.length === 0) {
             return res.status(404).json({ message: 'No booking data found' });
         }
         
         console.log('Booking data:', data);
-        res.status(200).json({ bookings: data });
+        res.status(200).json({ data});
 
     } catch (error) {
         console.error('Error fetching booking details:', error.message);
         res.status(500).json({ message: 'Server error while fetching booking details', error: error.message });
     }
 };
+const update=async(req,res)=>{
+    console.log(req.params.id);
+    const id=req.params.id
+    try {
+        // const update=await Booking.findByIdAndUpdate(id,({delivery:true,deliveredDate:Date.now()},{rertun:true}))
+        const updatedBooking = await Booking.findByIdAndUpdate(
+            id,
+            {
+                delivery: true,
+                deliveredDate: Date.now() // Use current timestamp
+            },
+            { new: true } // Option to return the updated document
+        );
+        console.log(updatedBooking);
+        return res.status(200).json('ok')
+        
+    } catch (error) {  
+       console.log(error);
+       return res.status(500).json('internal server error')
+        
+    }
+    
+}
 
-
-module.exports = { booking,bookingDetails }    
+module.exports = { booking,bookingDetails,update }    
