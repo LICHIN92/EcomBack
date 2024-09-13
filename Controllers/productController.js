@@ -3,6 +3,7 @@ const ITEM = require("../Models/category");
 const Dress = require("../Models/dress");
 
 const items = async (req, res) => {
+    
     try {
         const items = await ITEM.find()
         console.log(items);
@@ -13,7 +14,7 @@ const items = async (req, res) => {
     } catch (error) {
         console.log(error);
         res.status(500).json("internal server error")
-    }
+    } 
 
 }
 const viewType = async (req, res) => {
@@ -69,47 +70,6 @@ const extractPublicId = (url) => {
     }
 };
 
-// const deleting = async (req, res) => {
-//     console.log(req.params.id);
-//     try {
-//         const find = await Dress.findById(req.params.id);
-//         const pics = find.Pics;
-//         console.log("Images to delete:", pics);
-
-//         if (pics && pics.length > 0) {
-//             const deletionResults = await Promise.all(
-//                 pics.map(async (file) => {
-//                     const publicId = extractPublicId(file);
-//                     console.log("Public ID extracted:", publicId);
-
-//                     if (!publicId) {
-//                         throw new Error(`Invalid URL format: ${file}`);
-//                     }
-
-//                     const result = await cloudinaryInstance.uploader.destroy(publicId);
-//                     console.log("Deletion result for", publicId, ":", result);
-
-//                     if (result.result !== 'ok') {
-//                         res.status(404).json({ message: 'Failed to delete file' });
-
-//                         throw new Error(`Failed to delete file: ${file}`);
-
-//                     }
-//                     // return result;
-//                     const erade = await Dress.findByIdAndDelete(req.params.id)
-//                     res.status(200).json({ message: 'Files deleted successfully', results: deletionResults });
-
-//                 })
-//             );
-
-//         } else {
-//             res.status(404).json({ message: 'No files to delete' });
-//         }
-//     } catch (error) {
-//         console.error("Error in deletion process:", error);
-//         res.status(500).json({ message: 'Error deleting files', error: error.message });
-//     }
-// };
 const deleting = async (req, res) => {
     console.log(req.params.id);
     try {
@@ -157,6 +117,5 @@ const deleting = async (req, res) => {
         }
     }
 };
-
 
 module.exports = { items, viewType, detail, deleting }  

@@ -1,5 +1,5 @@
 const express= require('express')
-const { login, signup, forgot, address } = require('../Controllers/userControllers')
+const { login, signup, forgot, address,getUser } = require('../Controllers/userControllers')
 const { userAuth } = require('../middleware/authorization')
 const UserRouter=express.Router()
 
@@ -7,6 +7,7 @@ UserRouter.post('/',login)
 UserRouter.post('/signup',signup)
 UserRouter.post('/forgot',forgot)
 UserRouter.post('/address',userAuth,address)
+UserRouter.get('/:id',userAuth,getUser)
+ 
 
-
-module.exports =UserRouter
+module.exports =UserRouter 

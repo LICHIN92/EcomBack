@@ -104,6 +104,8 @@ const forgot = async (req, res) => {
 }
 
 const address = async (req, res) => {
+    console.log('address');
+    
     console.log(req.body);
     console.log(req.userId);
     const id = req.userId
@@ -120,7 +122,7 @@ const address = async (req, res) => {
                 },
                 { new: true } // Return the updated document
             );
-            find.Password=null
+            find.Password = null
             console.log(find)
 
             return res.status(200).json('Adress added Successfully')
@@ -129,11 +131,25 @@ const address = async (req, res) => {
             return res.status(500).json('internal server error')
 
         }
-    }else{
+    } else {
         return res.status(401).json(`can't send to this ${PIN}`)
     }
 
 
 }
-   
-module.exports = { login, signup, forgot, address }    
+const getUser = async (req, res) => {
+    console.log('get user');
+    
+    const id = req.params.id
+    try {
+        const data = await USER.findById(id)
+        console.log(data);
+        return res.status(200).json(data)
+    } catch (error) {
+        console.log(error);
+        
+        return res.status(500).json('internal server error')
+
+    }
+}
+module.exports = { login, signup, forgot, address, getUser }    
