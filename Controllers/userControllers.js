@@ -38,21 +38,32 @@ const signup = async (req, res) => {
 
 const login = async (req, res) => {
     const { userId, User_Password } = req.body;
+   
+    // const IfEmail = await USER.findOne({ Email: req.body.UserId })
+    // console.log(IfEmail);
+    console.log(req.body)
     try {
         // Check if userId is an email or a mobile number
-        const isEmail = /\S+@\S+\.\S+/.test(userId);
+        const isEmail = /\S+@\S+\.\S+/.test( req.body.UserId);
         let findUser;
+        const Email=userId
 
         // Find user by email or mobile
         if (isEmail) {
-            findUser = await USER.findOne({ Email: userId });
+            console.log(Email);
+             
+            findUser = await USER.findOne({ Email:req.body.UserId });
         } else {
+            console.log(userId);
+            
             findUser = await USER.findOne({ Mobile: userId });
         }
 
         console.log(findUser);
         if (findUser) {
-            const passwordTrue = await bcrypt.compare(User_Password, findUser.Password);
+            console.log(findUser.Password);
+            
+            const passwordTrue = await bcrypt.compare(req.body.User_Password, findUser.Password);
             console.log(passwordTrue);
             if (!passwordTrue) {
                 return res.status(401).json('Invalid Password');
@@ -105,7 +116,7 @@ const forgot = async (req, res) => {
 
 const address = async (req, res) => {
     console.log('address');
-    
+
     console.log(req.body);
     console.log(req.userId);
     const id = req.userId
@@ -139,7 +150,7 @@ const address = async (req, res) => {
 }
 const getUser = async (req, res) => {
     console.log('get user');
-    
+
     const id = req.params.id
     try {
         const data = await USER.findById(id)
@@ -147,7 +158,7 @@ const getUser = async (req, res) => {
         return res.status(200).json(data)
     } catch (error) {
         console.log(error);
-        
+
         return res.status(500).json('internal server error')
 
     }

@@ -6,7 +6,7 @@ const items = async (req, res) => {
     
     try {
         const items = await ITEM.find()
-        console.log(items);
+        // console.log(items);
         if (items) {
             return res.status(200).json(items)
         }

@@ -11,5 +11,5 @@ adminRouter.post('/',adminAuth,
 adminRouter.post('/addNewDress',upload.any(),
     newDress)
 
-module.exports=adminRouter 
+module.exports=adminRouter  
 
