@@ -9,7 +9,7 @@ const schema=mongoose.Schema({
         required:true
     },
     Mobile:{
-        type:Number,
+        type:String,
         required:true,
         unique:true
     },

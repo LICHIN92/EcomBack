@@ -39,12 +39,13 @@ const signup = async (req, res) => {
 const login = async (req, res) => {
     const { userId, User_Password } = req.body;
    
-    // const IfEmail = await USER.findOne({ Email: req.body.UserId })
-    // console.log(IfEmail);
+    const IfEmail = await USER.findOne({ Email: req.body.userId })
+    console.log(IfEmail);
     console.log(req.body)
     try {
         // Check if userId is an email or a mobile number
-        const isEmail = /\S+@\S+\.\S+/.test( req.body.UserId);
+        const isEmail = /\S+@\S+\.\S+/.test( req.body.userId);
+        console.log(isEmail)
         let findUser;
         const Email=userId
 
@@ -52,7 +53,7 @@ const login = async (req, res) => {
         if (isEmail) {
             console.log(Email);
              
-            findUser = await USER.findOne({ Email:req.body.UserId });
+            findUser = await USER.findOne({ Email:req.body.userId });
         } else {
             console.log(userId);
             
