@@ -11,7 +11,7 @@ const schema = mongoose.Schema({
     },
     Pics: {
         type: Array,
-        required: true
+        required: true 
     }
 })
 
