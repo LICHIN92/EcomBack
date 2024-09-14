@@ -53,7 +53,7 @@ connectdb();
 const app = express();
 
 const corsOptions = {
-    origin: ['http://localhost:5173', 'https://e-comme-umber.vercel.app'], // Corrected origins
+    origin: ['http://localhost:5173', 'https://e-comme-pygm-2ltgofm6x-lichin-chandrans-projects.vercel.app/'], // Corrected origins
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
