@@ -78,7 +78,7 @@ app.use('/product', productRouter);
 app.use('/booking', bookRouter);
 
 // Use proper environment variable name for port
-const PORT = process.env.PORT || 5000; // Fallback to 5000 if undefined
+const PORT = process.env.PORT || 3200; // Fallback to 5000 if undefined
 
 app.listen(PORT, () => {
     console.log(`Server is running at ${PORT}`);
