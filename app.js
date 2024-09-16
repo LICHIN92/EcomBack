@@ -34,7 +34,7 @@ app.use('/admin', adminRouter)
 app.use('/product',productRouter)
 app.use('/booking',bookRouter)
 
-app.listen(process.env.port, () => {
-    console.log(`server is running at ${process.env.port}`);
+app.listen(process.env.PORT, () => {
+    console.log(`server is running at ${process.env.PORT}`);
 }) 
 

@@ -21,7 +21,8 @@ const signup = async (req, res) => {
     }
     try {
         const saltvalue = 10
-          console.log(hashedPassword);
+        const hashedPassword = await bcrypt.hash(req.body.Password, saltvalue)
+        console.log(hashedPassword);
         const data = new USER({
             FirstName: FirstName, LastName: LastName, Email: Email, Mobile: Mobile, Password: hashedPassword
         })
@@ -31,7 +32,7 @@ const signup = async (req, res) => {
     } catch (error) {
         console.log(error);
         return res.status(500).json('internal server error')
-    } 
+    }
 
 }
 
