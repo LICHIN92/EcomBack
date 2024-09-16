@@ -14,7 +14,7 @@ const app = express()
 
 
 const corsOptions = {
-    origin: ['http://localhost:5173', 'https://e-comme-umber.vercel.app/'], // Corrected to an array
+    origin: ['http://localhost:5173', 'https://e-comme-pygm.vercel.app'], // Corrected to an array
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
