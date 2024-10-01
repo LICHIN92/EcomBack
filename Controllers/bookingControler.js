@@ -4,7 +4,7 @@ const USER = require("../Models/userModel");
 
 const booking = async (req, res) => {
     console.log('booking');
-    
+
     console.log(req.body)
     console.log(req.params.id);
     const id = req.params.id
@@ -31,7 +31,7 @@ const booking = async (req, res) => {
             console.log('with size');
 
         }
-        return res.status(200).json('Booking is Registered /n Thank you')
+        return res.status(200).json('Booking is Registered \nThank you')
 
     } catch (error) {
         console.log(error);
@@ -39,21 +39,6 @@ const booking = async (req, res) => {
     }
 
 }
-
-// const bookingDetails=async(req,res)=>{
-//     console.log('bookimf');
-
-//     try { 
-
-//         const data = await Booking.find()
-//                console.log(data);
-
-
-//     } catch (error) {
-
-//     }
-
-// }
 
 const bookingDetails = async (req, res) => {
     console.log('Fetching booking details...');
@@ -76,16 +61,28 @@ const bookingDetails = async (req, res) => {
         res.status(500).json({ message: 'Server error while fetching booking details', error: error.message });
     }
 };
+
 const update = async (req, res) => {
     console.log(req.params.id);
     const id = req.params.id
     try {
+        // Set the current date and time
+        const deliveredDate = new Date();  // Create a Date object from the current timestamp
+
+        // Calculate return date as 2 days after the delivered date
+        const returnDate = new Date(deliveredDate);  // Copy deliveredDate
+        console.log(returnDate);
+
+        returnDate.setDate(returnDate.getDate() + 2);  // Add 2 days to the deliveredDate
+        console.log(returnDate);
+
         // const update=await Booking.findByIdAndUpdate(id,({delivery:true,deliveredDate:Date.now()},{rertun:true}))
         const updatedBooking = await Booking.findByIdAndUpdate(
             id,
             {
                 delivery: true,
-                deliveredDate: Date.now() // Use current timestamp
+                deliveredDate: deliveredDate,
+                returnDate: returnDate
             },
             { new: true } // Option to return the updated document 
         );
@@ -130,11 +127,11 @@ const deleteCancel = async (req, res) => {
 
             // Assuming you don't have a size attribute; adjust accordingly
             const update = await Dress.findByIdAndUpdate(
-                itemId, 
-                { 
+                itemId,
+                {
                     $inc: { Quantity: 1 } // Increment the Quantity
                     // Remove size from here if it's not applicable
-                }, 
+                },
                 { new: true } // Returns the updated document
             );
 
@@ -150,4 +147,54 @@ const deleteCancel = async (req, res) => {
     }
 };
 
-module.exports = { booking, bookingDetails, update, myBook, deleteCancel }    
+const returnOrNot = async (req, res) => {
+    console.log(req.params.id);
+    const id = req.params.id
+
+    try {
+        const booking = await Booking.findById(id); // Find the booking by ID first
+
+        const updatedBooking = await Booking.findByIdAndUpdate(
+            id,
+            {
+                return: !booking.return, // Toggle the current value of 'return'
+                deliveredDate: Date.now() // Update the 'deliveredDate'
+            },
+            { new: true } // Return the updated document
+        );
+
+        console.log(updatedBooking);
+        // return res.status(200).json('')
+    } catch (error) {
+        console.error('Error updating booking:', error);
+    }
+
+}
+
+const returnRequest = async (req, res) => {
+    try {
+        const data = await Booking.find({ return: true, returned: false })
+            .populate({ path: 'bookedBy', select: ['FirstName', 'LastName', 'Mobile', "AddressLine1", 'AddressLine2', 'AddressLine3', 'PIN'] })
+            .populate({ path: 'itemBooked', select: ['Name', 'Type', 'Price', 'Pics'] })
+        console.log(data);
+        return res.status(200).json(data)
+    } catch (error) {
+        // console.log(error); 
+        res.status(500).json({ data: "internal server error" })
+    }
+}
+
+const buyBack = async (req, res) => {
+    console.log(req.params.id);
+    const id = req.params.id
+
+    try {
+        const result = await Booking.findByIdAndUpdate(id,{returned:true},{new:true})
+        console.log(result);
+        return res.status(200).json('updated')
+    } catch (error) {
+console.log(error); 
+
+    }
+}
+module.exports = { booking, bookingDetails, update, myBook, deleteCancel, returnOrNot, returnRequest, buyBack }  

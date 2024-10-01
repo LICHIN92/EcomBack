@@ -134,10 +134,12 @@ const address = async (req, res) => {
                 },
                 { new: true } // Return the updated document
             );
-            find.Password = null
             console.log(find)
+            // find.Password = undefined
 
-            return res.status(200).json('Adress added Successfully')
+            const token = JWT.sign({ user: find }, process.env.jwt_secret_Key);
+
+            return res.status(200).json({message:'Adress added Successfully',token})
         } catch (error) {
             console.log(error);
             return res.status(500).json('internal server error')

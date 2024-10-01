@@ -14,9 +14,9 @@ const schema = new mongoose.Schema({
     Size: {
         type: String,
     },
-    Name:{
-        type:String,
-        required:true
+    Name: {
+        type: String,
+        required: true
     },
     bookingDate: {
         type: Date,
@@ -33,7 +33,19 @@ const schema = new mongoose.Schema({
     deliveredDate: {
         type: Date,
         default: null
-    }
+    },
+    returnDate: {
+        type: Date,
+        default: null
+    },
+    returned: {
+        type: Boolean,
+        default: false
+    },
+    return: {
+        type: Boolean,
+        default: false
+    },
 }, {
     timestamps: true
 });
