@@ -38,32 +38,32 @@ const signup = async (req, res) => {
 
 const login = async (req, res) => {
     const { userId, User_Password } = req.body;
-   
+
     const IfEmail = await USER.findOne({ Email: req.body.userId })
     console.log(IfEmail);
     console.log(req.body)
     try {
         // Check if userId is an email or a mobile number
-        const isEmail = /\S+@\S+\.\S+/.test( req.body.userId);
+        const isEmail = /\S+@\S+\.\S+/.test(req.body.userId);
         console.log(isEmail)
         let findUser;
-        const Email=userId
+        const Email = userId
 
         // Find user by email or mobile
         if (isEmail) {
             console.log(Email);
-             
-            findUser = await USER.findOne({ Email:req.body.userId });
+
+            findUser = await USER.findOne({ Email: req.body.userId });
         } else {
             console.log(userId);
-            
+
             findUser = await USER.findOne({ Mobile: userId });
         }
 
         console.log(findUser);
         if (findUser) {
             console.log(findUser.Password);
-            
+
             const passwordTrue = await bcrypt.compare(req.body.User_Password, findUser.Password);
             console.log(passwordTrue);
             if (!passwordTrue) {
@@ -139,7 +139,7 @@ const address = async (req, res) => {
 
             const token = JWT.sign({ user: find }, process.env.jwt_secret_Key);
 
-            return res.status(200).json({message:'Adress added Successfully',token})
+            return res.status(200).json({ message: 'Adress added Successfully', token })
         } catch (error) {
             console.log(error);
             return res.status(500).json('internal server error')
@@ -166,4 +166,18 @@ const getUser = async (req, res) => {
 
     }
 }
-module.exports = { login, signup, forgot, address, getUser }    
+
+const getNumber = async (req, res) => {
+    try {
+        const numbers = await USER.countDocuments({});
+        console.log(numbers);
+        return res.status(200).json(numbers)
+
+    } catch (error) {
+      console.log(error);
+      return res.status(200).json('internal server error')
+      
+    }
+}
+
+module.exports = { login, signup, forgot, address, getUser, getNumber }    

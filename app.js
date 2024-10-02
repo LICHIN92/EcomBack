@@ -27,7 +27,7 @@ app.options('*', cors(corsOptions));
 app.use(bodyParser.urlencoded({ extended: false }));
 
 // Parse application/json
-app.use(bodyParser.json());
+app.use(bodyParser.json()); 
 
 app.use('/user', UserRouter)
 app.use('/admin', adminRouter)
