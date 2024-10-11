@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const FlexApiBase = require('twilio/lib/rest/FlexApiBase');
 
 const schema = new mongoose.Schema({
     bookedBy: {
@@ -46,9 +47,14 @@ const schema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    review: {
+        type: Boolean,
+        default: false
+    }
 }, {
     timestamps: true
 });
 
 const Booking = mongoose.model('booking', schema);
 module.exports = Booking;
+   

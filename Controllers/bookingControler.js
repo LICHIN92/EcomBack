@@ -180,7 +180,7 @@ const returnRequest = async (req, res) => {
         return res.status(200).json(data)
     } catch (error) {
         // console.log(error); 
-        res.status(500).json({ data: "internal server error" })
+        res.status(500).json({ data: "internal server error" }) 
     }
 }
 

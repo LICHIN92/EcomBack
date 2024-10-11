@@ -7,6 +7,7 @@ const cors = require('cors');
 const adminRouter = require('./Routes/adminRouter.js');
 const productRouter = require('./Routes/productRouter.js');
 const { bookRouter } = require('./Routes/BookingRouter.js');
+const reviewRouter = require('./Routes/reviewRouter.js');
 dotenv.config()
   
 connectdb()
@@ -33,6 +34,7 @@ app.use('/user', UserRouter)
 app.use('/admin', adminRouter)
 app.use('/product',productRouter)
 app.use('/booking',bookRouter)
+app.use('/review',reviewRouter)
 
 app.listen(process.env.PORT, () => {
     console.log(`server is running at ${process.env.PORT}`);
