@@ -1,6 +1,6 @@
+const { default: mongoose } = require("mongoose");
 const Booking = require("../Models/booking");
 const Review = require("../Models/review");
-const { patch } = require("../Routes/reviewRouter");
 
 
 const review = async (req, res) => {
@@ -37,7 +37,8 @@ const getReview = async (req, res) => {
     try {
         const data = await Review.find({ product: id })
             .populate({ path: "user", select: ['FirstName', "LastName"] })
-        console.log(data);
+        // console.log(data);
+
         return res.status(200).json(data)
     } catch (error) {
         console.log(error);
@@ -45,4 +46,44 @@ const getReview = async (req, res) => {
 
     }
 }
-module.exports = { review, getReview }         
+
+const average = async (req, res) => {
+    console.log(req.params.id);
+    console.log('dsafsgvdgsgsgsggtrit');
+    try {
+        const productId = new mongoose.Types.ObjectId(req.params.id);
+        const average = await Review.aggregate([
+            {
+                $match: {
+                    product: productId
+                }  // Match reviews for the specific product
+            },
+            {
+                $group: {
+                    _id: null,  // Group all matching documents together
+                    averageRating: { $avg: "$starRating" }  // Calculate the average of the 'starRating' field
+                }
+            }
+        ]);
+        console.log(average);
+        let averageRating = average.length > 0 ? average[0].averageRating : 0;
+        console.log(averageRating);
+
+        averageRating = averageRating.toFixed(1)
+        console.log(averageRating);
+
+
+
+        res.status(200).json({ success: true, averageRating });
+    } catch (error) {
+        console.error('Error calculating average rating:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to calculate average rating',
+            error: error.message
+        });
+    }
+
+}
+
+module.exports = { review, getReview, average }          
