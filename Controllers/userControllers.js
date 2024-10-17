@@ -169,15 +169,27 @@ const getUser = async (req, res) => {
 
 const getNumber = async (req, res) => {
     try {
-        const numbers = await USER.countDocuments({});
+        const numbers = await USER.countDocuments({user:false});
         console.log(numbers);
         return res.status(200).json(numbers)
 
     } catch (error) {
-      console.log(error);
-      return res.status(200).json('internal server error')
-      
+        console.log(error);
+        return res.status(200).json('internal server error')
+
     }
 }
 
-module.exports = { login, signup, forgot, address, getUser, getNumber }    
+const Userdetails = async (req, res) => {
+   
+    try {
+        const data=await USER.find({user:false})
+        console.log(data); 
+        res.status(200).json(data)
+    } catch (error) {
+        console.log(error);
+        
+    } 
+}
+
+module.exports = { login, signup, forgot, address, getUser, getNumber, Userdetails }    
