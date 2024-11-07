@@ -1,3 +1,4 @@
+const Razorpay = require("razorpay");
 const Booking = require("../Models/booking");
 const Dress = require("../Models/dress");
 const USER = require("../Models/userModel");
@@ -19,10 +20,10 @@ const booking = async (req, res) => {
             const data = await new Booking({ price: price, Name: Name, bookedBy: user, itemBooked: id }).save()
             // await data.save()
             const update = await Dress.findByIdAndUpdate(id, { $inc: { Quantity: -1 } }, { new: true })
-            console.log(update);
+            console.log(update); 
 
         } else {
-            console.log(size);
+            console.log(size); 
 
             const data = new Booking({ Size: size, Name: Name, price: price, bookedBy: user, itemBooked: id })
             await data.save()
@@ -126,17 +127,34 @@ const deleteCancel = async (req, res) => {
             const itemId = bookingData.itemBooked; // Extract item ID from booking data
 
             // Assuming you don't have a size attribute; adjust accordingly
-            const update = await Dress.findByIdAndUpdate(
-                itemId,
-                {
-                    $inc: { Quantity: 1 } // Increment the Quantity
-                    // Remove size from here if it's not applicable
-                },
-                { new: true } // Returns the updated document
-            );
-
-            console.log(update);
-            res.status(200).json({ message: 'Booking cancelled and item updated successfully.', update });
+            if(bookingData.Size){
+                console.log(bookingData.Size);
+                const update = await Dress.findByIdAndUpdate(
+                    itemId,
+                    {
+                        $inc: { Quantity: 1 } ,// Increment the Quantity
+                        // Remove size from here if it's not applicable
+                        $push: { Size: bookingData.Size } 
+                    },
+                    { new: true } // Returns the updated document
+                );
+     
+                console.log(update);
+                res.status(200).json({ message: 'Booking cancelled and item updated successfully.', update });
+            }else{
+                const update = await Dress.findByIdAndUpdate(
+                    itemId,
+                    { 
+                        $inc: { Quantity: 1 } // Increment the Quantity
+                        // Remove size from here if it's not applicable
+                    },
+                    { new: true } // Returns the updated document
+                );
+     
+                console.log(update);
+                res.status(200).json({ message: 'Booking cancelled and item updated successfully.', update });
+            }
+           
         } else {
             res.status(404).json({ message: 'Booking not found.' });
         }
@@ -197,4 +215,171 @@ console.log(error);
 
     }
 }
-module.exports = { booking, bookingDetails, update, myBook, deleteCancel, returnOrNot, returnRequest, buyBack }  
+
+const order=async(req,res,next)=>{
+    console.log('order controller');
+    console.log("req.body",req.body);
+    const id = req.params.id
+    console.log(id);
+    
+    console.log(req.userId);
+    const user = req.userId
+    const { price, size, Name,itemBooked } = req.body
+    let ids=null
+    
+    try {
+        
+        const instance = new Razorpay({
+            key_id: process.env.RP_KEY_ID,
+            key_secret: process.env.RP_SECRET_KEY,
+        });
+        if (typeof size == 'undefined' || size == null || size == '') {
+            console.log('without size ');
+            
+            console.log(size !== null);
+            const data = await new Booking({ price: price, Name: Name, bookedBy: user, itemBooked: id }).save()
+            await data.save()
+            console.log('data',data);
+            console.log("data._id",data._id);
+
+            console.log(data._id.toString()); 
+             
+            ids=data._id.toString()
+            const update = await Dress.findByIdAndUpdate(id, { $inc: { Quantity: -1 } }, { new: true })
+            console.log(update); 
+
+        } else {
+            console.log(size);  
+
+            const data = new Booking({ Size: size, Name: Name, price: price, bookedBy: user, itemBooked: id })
+            await data.save()
+            // console.log(data._id);
+            
+            ids=data._id.toString()
+
+            const update = await Dress.findByIdAndUpdate(id, { $inc: { Quantity: -1 }, $pull: { Size: size } }, { new: true })
+            console.log(update);
+            console.log('with size');
+
+        }
+        const options={
+            amount:price*100,
+            currency:"INR",
+            receipt:ids,
+            // itemBooked:id
+        }
+        const order=await instance.orders.create(options)
+        console.log("order",order);
+        
+        if(!order){
+            return res.status(500).send("Some error occurred");
+
+        }
+       return res.status(200).json(order);
+
+    } catch (error) {
+        console.log('error lichin');
+        
+        console.log(error); 
+         next()
+    }
+}
+
+const verify =async(req,res)=>{
+    console.log(req.body);
+    console.log("lichin");
+    console.log("verify");
+
+    
+    try {
+        
+    } catch (error) {
+        console.log(error);
+         
+    }
+}
+
+
+// const order = async (req, res) => {
+//     console.log("Order initiated");
+//     console.log(req.body);
+
+//     const id = req.params.id;
+//     const user = req.userId;
+//     const { price, size, Name } = req.body;
+//     let bookingId = null;
+//     let itemBooked=null
+
+//     try {
+//         const instance = new Razorpay({
+//             key_id: process.env.RP_KEY_ID,
+//             key_secret: process.env.RP_SECRET_KEY,
+//         });
+
+//         if (!size) {
+//             // Booking without size selection
+//             const data = await new Booking({ price, Name, bookedBy: user, itemBooked: id }).save();
+//             console.log('ok ');
+            
+//             bookingId = data._id.toString();
+// i
+//             await Dress.findByIdAndUpdate(id, { $inc: { Quantity: -1 } }, { new: true });
+//             console.log("Data saved without size", data);
+//         } else {
+//             // Booking with size selection
+//             const data = await new Booking({ Size: size, Name, price, bookedBy: user, itemBooked: id }).save();
+//             bookingId = data._id.toString();
+
+
+//             await Dress.findByIdAndUpdate(id, { $inc: { Quantity: -1 }, $pull: { Size: size } }, { new: true });
+//             console.log("Data saved with size", data);
+//         }
+
+//         const options = {
+//             amount: price * 100, // Amount in paise
+//             currency: "INR",
+//             receipt: bookingId,
+//         };
+
+//         const order = await instance.orders.create(options);
+//         console.log('order',order);
+        
+//         if (!order) {
+//             return res.status(500).send("Some error occurred during order creation");
+//         }
+
+//         res.status(200).json(order);
+
+//     } catch (error) {
+//         console.error("Order Error:", error);
+//         res.status(500).send("Internal Server Error");
+//     }
+// };
+
+// // Verification function to validate Razorpay payment signature
+// const verify = async (req, res) => {
+//     console.log("Verification initiated");
+
+//     try {
+//         const { orderCreationId, razorpayPaymentId, razorpayOrderId, razorpaySignature, receipt } = req.body;
+
+//         const shasum = crypto.createHmac("sha256", process.env.RP_SECRET_KEY);
+//         shasum.update(orderCreationId + "|" + razorpayPaymentId);
+//         const generatedSignature = shasum.digest("hex");
+
+//         // Compare generated signature with Razorpay's signature
+//         if (generatedSignature === razorpaySignature) {
+//             // Update booking status to "Paid" in your database
+//             await Booking.findByIdAndUpdate(receipt, { status: "Paid" }, { new: true });
+
+//             res.status(200).json({ success: true, message: "Payment verification successful" });
+//         } else {
+//             res.status(400).json({ success: false, message: "Invalid payment signature" });
+//         }
+//     } catch (error) {
+//         console.error("Verification Error:", error);
+//         res.status(500).send("Verification failed");
+//     }
+// };
+
+module.exports = { booking, bookingDetails, update, myBook, deleteCancel, returnOrNot, returnRequest, buyBack,order,verify  }   

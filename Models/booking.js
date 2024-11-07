@@ -50,6 +50,12 @@ const schema = new mongoose.Schema({
     review: {
         type: Boolean,
         default: false
+    },
+    payment:{
+        type:Boolean,
+        default:false
+        // false=cash on delivery
+        // true= online payment
     }
 }, {
     timestamps: true

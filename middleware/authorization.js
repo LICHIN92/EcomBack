@@ -49,7 +49,7 @@ const userAuth = async (req, res, next) => {
         return res.status(401).send('Authorization header is missing');
     }
     const token = authHeader.split(' ')[1]; // Bearer token
-    console.log(token);
+    // console.log(token);
     if (!token) {
         console.log('no')
         return res.status(401).json({ message: 'No token provided, authorization denied' });
@@ -59,7 +59,7 @@ const userAuth = async (req, res, next) => {
         // console.log('decoded', decoded);
 
         if (decoded) {
-            console.log( decoded.user._id);
+            // console.log( decoded.user._id);
 
             req.userId =decoded.user._id
 

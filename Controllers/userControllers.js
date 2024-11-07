@@ -187,9 +187,9 @@ const Userdetails = async (req, res) => {
         console.log(data); 
         res.status(200).json(data)
     } catch (error) {
-        console.log(error);
+        console.log(error); 
         
     } 
-}
+}  
 
-module.exports = { login, signup, forgot, address, getUser, getNumber, Userdetails }    
+module.exports = { login, signup, forgot, address, getUser, getNumber, Userdetails } 
